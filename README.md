@@ -7,13 +7,14 @@ A comprehensive web-based survey and quiz platform featuring two main components
 
 ## 📋 Contents
 
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Technical Details](#technical-details)
-- [Contributing](#contributing)
-- [License](#license)
+- [✨ Features](#-features)
+- [🏗 Project Structure](#-project-structure)
+- [💻 Installation](#-installation)
+- [🚀 Usage](#-usage)
+- [🔧 Technical Details](#-technical-details)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [🙏 Acknowledgments](#-acknowledgments)
 
 ## ✨ Features
 
