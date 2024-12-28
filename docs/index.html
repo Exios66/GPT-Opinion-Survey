@@ -1,491 +1,967 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatGPT Opinion Survey</title>
+    <meta name="description" content="ChatGPT Opinion Survey - A research survey about attitudes and beliefs towards ChatGPT">
+    <title>ChatGPT Opinion Survey - Exploring User Attitudes and Beliefs</title>
     <style>
+        :root {
+            /* Light theme - Solarized Tokyo Day */
+            --bg-primary: #f0f1f5;
+            --bg-secondary: #e5e7eb;
+            --text-primary: #1a1b26;
+            --text-secondary: #4c505e;
+            --accent-color: #7aa2f7;
+            --accent-hover: #5d7ce6;
+            --border-color: #9699a3;
+            --error-color: #f7768e;
+            --success-color: #9ece6a;
+            --warning-color: #e0af68;
+            --info-color: #2ac3de;
+            --fieldset-bg: #ffffff;
+            --select-bg: #ffffff;
+            --select-border: #c0caf5;
+            --button-bg: #7aa2f7;
+            --button-text: #ffffff;
+            --button-hover: #5d7ce6;
+            --shadow-color: rgba(26, 27, 38, 0.1);
+            --highlight-color: rgba(122, 162, 247, 0.1);
+            --validation-bg: rgba(122, 162, 247, 0.05);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme - Tokyo Night */
+            --bg-primary: #1a1b26;
+            --bg-secondary: #24283b;
+            --text-primary: #c0caf5;
+            --text-secondary: #9aa5ce;
+            --accent-color: #7aa2f7;
+            --accent-hover: #89b4fa;
+            --border-color: #414868;
+            --error-color: #f7768e;
+            --success-color: #9ece6a;
+            --warning-color: #e0af68;
+            --info-color: #2ac3de;
+            --fieldset-bg: #1f2335;
+            --select-bg: #24283b;
+            --select-border: #414868;
+            --button-bg: #7aa2f7;
+            --button-text: #1a1b26;
+            --button-hover: #89b4fa;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --highlight-color: rgba(122, 162, 247, 0.1);
+            --validation-bg: rgba(122, 162, 247, 0.05);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             line-height: 1.6;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
         }
 
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
+        header {
+            background-color: var(--bg-secondary);
             padding: 2rem;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
             text-align: center;
-            color: #2c3e50;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            position: relative;
+        }
+
+        .theme-switch {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-switch button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: var(--text-primary);
+        }
+
+        .theme-switch button:hover {
+            background-color: var(--shadow-color);
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        fieldset {
+            background-color: var(--fieldset-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
             margin-bottom: 2rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
         }
 
-        .progress-container {
-            width: 100%;
-            height: 20px;
-            background-color: #eee;
-            border-radius: 10px;
-            margin-bottom: 2rem;
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background-color: #3498db;
-            border-radius: 10px;
-            transition: width 0.3s ease;
-        }
-
-        .question-container {
-            display: none;
-            margin-bottom: 2rem;
-        }
-
-        .question-container.active {
-            display: block;
+        legend {
+            color: var(--accent-color);
+            font-weight: bold;
+            padding: 0 0.5rem;
         }
 
         .question {
-            font-size: 1.2rem;
-            margin-bottom: 1rem;
-            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            transform: translateY(0);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+            position: relative;
         }
 
-        .options {
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        .question.answered {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .answer-option {
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .answer-option:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .answer-option.selected {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        .validation-badge {
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .question.answered .validation-badge {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .progress-summary {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 24px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 98;
+            transition: all 0.3s ease;
+        }
+
+        .progress-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 15px;
+            background: var(--bg-primary);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .timer {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background-color: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            z-index: 100;
+        }
+
+        .modern-footer {
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            box-shadow: 0 -2px 10px var(--shadow-color);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .footer-left, .footer-center, .footer-right {
             display: flex;
             flex-direction: column;
             gap: 1rem;
         }
 
-        .option {
-            padding: 1rem;
-            background-color: #f8f9fa;
-            border: 2px solid #e9ecef;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .option:hover {
-            background-color: #e9ecef;
-        }
-
-        .option input[type="radio"] {
-            margin-right: 10px;
-        }
-
-        .button-container {
+        .social-links {
             display: flex;
-            justify-content: space-between;
-            margin-top: 2rem;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1rem;
         }
 
-        button {
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
+        .social-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 8px;
         }
 
-        #prevBtn {
-            background-color: #95a5a6;
+        .social-link:hover {
+            color: var(--accent-color);
+            background-color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .welcome-content {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            box-shadow: 0 8px 32px var(--shadow-color);
+            transform: translateY(0);
+            transition: transform 0.5s ease-out;
+        }
+
+        .welcome-content.hide {
+            transform: translateY(-20px);
+        }
+
+        .welcome-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .floating-help {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-color);
             color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: all 0.3s ease;
+            z-index: 100;
         }
 
-        #nextBtn {
-            background-color: #3498db;
-            color: white;
+        .help-tooltip {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            width: 250px;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            margin-bottom: 1rem;
+            display: none;
         }
 
-        button:hover {
-            opacity: 0.9;
+        .floating-help:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        .floating-help:hover .help-tooltip {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-right {
+                text-align: center;
+            }
+
+            .timer {
+                position: static;
+                margin: 1rem auto;
+                width: fit-content;
+            }
+
+            main {
+                padding: 1rem;
+            }
         }
 
         #results {
-            display: none;
-            text-align: center;
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
         }
 
         #results h2 {
-            color: #2c3e50;
+            color: var(--accent-color);
             margin-bottom: 1rem;
         }
 
-        #results p {
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .result-card {
+            background: var(--bg-primary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .result-card h3 {
+            color: var(--accent-color);
             margin-bottom: 1rem;
         }
 
-        .scale-description {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding: 1rem;
-            background-color: #f8f9fa;
-            border-radius: 5px;
+        .action-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .action-button:hover {
+            background-color: var(--button-hover);
+            transform: translateY(-2px);
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
+    <div class="progress-bar"></div>
+    
+    <header>
+        <div class="theme-switch">
+            <button type="button" onclick="toggleTheme()" aria-label="Toggle theme">
+                🌓
+            </button>
+        </div>
         <h1>ChatGPT Opinion Survey</h1>
-        
-        <div class="progress-container">
-            <div class="progress-bar" id="progress"></div>
-        </div>
+    </header>
 
+    <main>
         <div id="survey">
-            <!-- Preliminary Questions -->
-            <div class="question-container active" data-question="1">
-                <div class="question">Have you heard of ChatGPT before this study?</div>
-                <div class="options">
-                    <label class="option">
-                        <input type="radio" name="q1" value="yes"> Yes
-                    </label>
-                    <label class="option">
-                        <input type="radio" name="q1" value="no"> No
-                    </label>
+            <section id="instructions" aria-label="Survey Instructions">
+                <p>For each statement below, choose a number from 1 to 5 to indicate how much you agree or disagree:</p>
+                <ul>
+                    <li><strong>1</strong> - Strongly Disagree</li>
+                    <li><strong>2</strong> - Disagree</li>
+                    <li><strong>3</strong> - Neutral</li>
+                    <li><strong>4</strong> - Agree</li>
+                    <li><strong>5</strong> - Strongly Agree</li>
+                </ul>
+            </section>
+
+            <form id="survey-form" novalidate>
+                <!-- Preliminary Questions -->
+                <fieldset>
+                    <legend>Background Information</legend>
+                    <div class="question" data-question="1">
+                        <label>Have you heard of ChatGPT before this study?</label>
+                        <div class="answer-grid" data-question-id="q1">
+                            <div class="answer-option" data-value="yes">Yes</div>
+                            <div class="answer-option" data-value="no">No</div>
+                        </div>
+                    </div>
+
+                    <div class="question" data-question="2">
+                        <label>Have you used ChatGPT before this study?</label>
+                        <div class="answer-grid" data-question-id="q2">
+                            <div class="answer-option" data-value="yes">Yes</div>
+                            <div class="answer-option" data-value="no">No</div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <!-- Main Questions -->
+                <fieldset>
+                    <legend>Concerns and Risks</legend>
+                    <!-- Questions 3-10 -->
+                </fieldset>
+
+                <fieldset>
+                    <legend>Attitudes and Enthusiasm</legend>
+                    <!-- Questions 11-14 -->
+                </fieldset>
+
+                <fieldset>
+                    <legend>Usage and Experience</legend>
+                    <!-- Questions 15-21 -->
+                </fieldset>
+
+                <div class="form-controls">
+                    <button type="submit">Submit Survey</button>
+                    <button type="reset">Clear Form</button>
                 </div>
-            </div>
-
-            <div class="question-container" data-question="2">
-                <div class="question">Have you used ChatGPT before this study?</div>
-                <div class="options">
-                    <label class="option">
-                        <input type="radio" name="q2" value="yes"> Yes
-                    </label>
-                    <label class="option">
-                        <input type="radio" name="q2" value="no"> No
-                    </label>
-                </div>
-            </div>
-
-            <div class="scale-description" id="scale-info" style="display: none;">
-                For each statement below, choose a number from 1 to 5 to indicate how much you agree or disagree:<br>
-                1 - Strongly Disagree | 2 - Disagree | 3 - Neutral | 4 - Agree | 5 - Strongly Agree
-            </div>
-
-            <!-- Main Questions -->
-            <div class="question-container" data-question="3">
-                <div class="question">I am concerned about the reliability of the information provided by ChatGPT.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q3" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q3" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q3" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q3" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q3" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <!-- Questions 4-21 follow the same pattern -->
-            <div class="question-container" data-question="4">
-                <div class="question">I am concerned that using ChatGPT would get me accused of plagiarism.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q4" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q4" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q4" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q4" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q4" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="5">
-                <div class="question">I am afraid of relying too much on ChatGPT and not developing my critical thinking skills.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q5" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q5" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q5" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q5" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q5" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="6">
-                <div class="question">I am concerned about the potential security risks of using ChatGPT.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q6" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q6" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q6" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q6" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q6" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="7">
-                <div class="question">I am afraid of becoming too dependent on technology like ChatGPT.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q7" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q7" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q7" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q7" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q7" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="8">
-                <div class="question">I am afraid that using ChatGPT would result in a lack of originality in my university assignments and duties.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q8" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q8" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q8" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q8" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q8" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="9">
-                <div class="question">I am afraid that the use of the ChatGPT would be a violation of academic and university policies.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q9" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q9" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q9" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q9" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q9" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="10">
-                <div class="question">I am concerned about the potential privacy risks that might be associated with using ChatGPT.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q10" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q10" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q10" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q10" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q10" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="11">
-                <div class="question">I am enthusiastic about using technology such as ChatGPT for learning and research.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q11" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q11" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q11" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q11" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q11" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="12">
-                <div class="question">I believe technology such as ChatGPT is an important tool for academic success.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q12" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q12" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q12" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q12" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q12" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="13">
-                <div class="question">I think that technology like ChatGPT is attractive and fun to use.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q13" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q13" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q13" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q13" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q13" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="14">
-                <div class="question">I am always keen to learn about new technologies like ChatGPT.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q14" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q14" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q14" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q14" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q14" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="15">
-                <div class="question">I trust the opinions of my friends or colleagues about using ChatGPT.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q15" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q15" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q15" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q15" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q15" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="16">
-                <div class="question">ChatGPT does not require extensive technical knowledge.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q16" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q16" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q16" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q16" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q16" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="17">
-                <div class="question">I believe that using ChatGPT can save time and effort in my university assignments and duties.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q17" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q17" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q17" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q17" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q17" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="18">
-                <div class="question">I spontaneously find myself using ChatGPT when I need information.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q18" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q18" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q18" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q18" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q18" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="19">
-                <div class="question">I appreciate the accuracy and reliability of the information provided.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q19" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q19" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q19" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q19" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q19" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="20">
-                <div class="question">I have used tools or techniques similar to ChatGPT in the past.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q20" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q20" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q20" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q20" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q20" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="question-container" data-question="21">
-                <div class="question">It does not take a long time to learn how to use ChatGPT.</div>
-                <div class="options">
-                    <label class="option"><input type="radio" name="q21" value="1"> Strongly Disagree</label>
-                    <label class="option"><input type="radio" name="q21" value="2"> Disagree</label>
-                    <label class="option"><input type="radio" name="q21" value="3"> Neutral</label>
-                    <label class="option"><input type="radio" name="q21" value="4"> Agree</label>
-                    <label class="option"><input type="radio" name="q21" value="5"> Strongly Agree</label>
-                </div>
-            </div>
-
-            <div class="button-container">
-                <button id="prevBtn" style="display: none;">Previous</button>
-                <button id="nextBtn">Next</button>
-            </div>
+            </form>
         </div>
 
-        <div id="results">
-            <h2>Survey Results</h2>
-            <p>Thank you for completing the survey!</p>
-            <div id="resultsSummary"></div>
+        <div id="results" style="display: none;">
+            <div class="results-container">
+                <div class="results-header">
+                    <h2>Your Survey Results</h2>
+                    <p class="results-timestamp"></p>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h3>Concerns Score</h3>
+                        <div class="score"></div>
+                        <div class="interpretation"></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Enthusiasm Score</h3>
+                        <div class="score"></div>
+                        <div class="interpretation"></div>
+                    </div>
+                    
+                    <div class="result-card">
+                        <h3>Usage Score</h3>
+                        <div class="score"></div>
+                        <div class="interpretation"></div>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button id="download-results" class="action-button">
+                        Download Results
+                    </button>
+                    <button id="share-results" class="action-button">
+                        Share Results
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>ChatGPT Opinion Survey</h3>
+                <p>A research survey about attitudes and beliefs towards ChatGPT and its impact on academic work.</p>
+            </div>
+            
+            <div class="footer-center">
+                <div class="social-links">
+                    <a href="https://github.com/yourusername" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="https://your-documentation-link.com" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-book"></i>
+                        <span>Documentation</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-right">
+                <p>Research Project</p>
+                <p>© 2024 All rights reserved</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="floating-help">
+        <i class="fas fa-question"></i>
+        <div class="help-tooltip">
+            <h4>Need Help?</h4>
+            <p>• Click numbers to select your answer</p>
+            <p>• Use keyboard shortcuts (Shift + ? to view)</p>
+            <p>• Click section indicators to navigate</p>
         </div>
     </div>
 
     <script>
-        let currentQuestion = 1;
-        const totalQuestions = 21; // Updated to match new total
-        
-        function updateProgress() {
-            const progress = ((currentQuestion - 1) / totalQuestions) * 100;
-            document.getElementById('progress').style.width = `${progress}%`;
+        const DEBUG = false; // Set to true to enable debug mode
+        let startTime;
+        let timerInterval;
+
+        function logDebug(message) {
+            if (DEBUG) {
+                console.log(`[DEBUG] ${message}`);
+            }
         }
 
-        function showQuestion(questionNumber) {
-            document.querySelectorAll('.question-container').forEach(container => {
-                container.classList.remove('active');
+        // Theme toggle functionality
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            logDebug(`Theme switched to ${newTheme} mode`);
+        }
+
+        function startTimer() {
+            startTime = new Date();
+            
+            // Create timer element if not exists
+            if (!document.getElementById('survey-timer')) {
+                const timerElement = document.createElement('div');
+                timerElement.className = 'timer';
+                timerElement.id = 'survey-timer';
+                document.body.appendChild(timerElement);
+            }
+
+            // Initialize progress summary if not exists
+            if (!document.querySelector('.progress-summary')) {
+                const summary = document.createElement('div');
+                summary.className = 'progress-summary';
+                summary.innerHTML = `
+                    <div class="progress-pill">
+                        <i class="fas fa-tasks"></i>
+                        <span class="progress-count">0/21</span>
+                    </div>
+                    <div class="progress-pill">
+                        <i class="fas fa-clock"></i>
+                        <span class="elapsed-time">00:00</span>
+                    </div>
+                `;
+                document.body.appendChild(summary);
+            }
+
+            timerInterval = setInterval(updateTimer, 1000);
+            updateProgressSummary();
+        }
+
+        function updateTimer() {
+            const currentTime = new Date();
+            const elapsedTime = new Date(currentTime - startTime);
+            const minutes = elapsedTime.getMinutes().toString().padStart(2, '0');
+            const seconds = elapsedTime.getSeconds().toString().padStart(2, '0');
+            
+            const timerElement = document.getElementById('survey-timer');
+            if (timerElement) {
+                timerElement.textContent = `Time: ${minutes}:${seconds}`;
+            }
+
+            const elapsedTimeElement = document.querySelector('.progress-summary .elapsed-time');
+            if (elapsedTimeElement) {
+                elapsedTimeElement.textContent = `${minutes}:${seconds}`;
+            }
+        }
+
+        function selectAnswer(questionId, value, selectedOption) {
+            const question = selectedOption.closest('.question');
+            const answerGrid = selectedOption.closest('.answer-grid');
+            
+            // Remove previous selection
+            answerGrid.querySelectorAll('.answer-option').forEach(opt => {
+                opt.classList.remove('selected');
             });
-            document.querySelector(`[data-question="${questionNumber}"]`).classList.add('active');
             
-            // Show scale description after preliminary questions
-            const scaleInfo = document.getElementById('scale-info');
-            scaleInfo.style.display = questionNumber > 2 ? 'block' : 'none';
+            // Add new selection
+            selectedOption.classList.add('selected');
+            question.classList.add('answered');
             
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            
-            prevBtn.style.display = questionNumber === 1 ? 'none' : 'block';
-            nextBtn.textContent = questionNumber === totalQuestions ? 'Submit' : 'Next';
+            // Store the answer
+            const responses = getStoredResponses();
+            responses[questionId] = value;
+            localStorage.setItem('current_responses', JSON.stringify(responses));
             
             updateProgress();
+            updateProgressSummary();
+            highlightNextUnanswered();
         }
 
-        function calculateResults() {
-            let results = {};
-            for (let i = 1; i <= totalQuestions; i++) {
-                const selected = document.querySelector(`input[name="q${i}"]:checked`);
-                results[`q${i}`] = selected ? selected.value : null;
-            }
-            return results;
+        function getStoredResponses() {
+            return JSON.parse(localStorage.getItem('current_responses') || '{}');
         }
 
-        function displayResults(results) {
-            const survey = document.getElementById('survey');
-            const resultsDiv = document.getElementById('results');
-            const summaryDiv = document.getElementById('resultsSummary');
+        function updateProgress() {
+            const totalQuestions = document.querySelectorAll('.question').length;
+            const answeredQuestions = document.querySelectorAll('.question.answered').length;
+            const progressPercent = (answeredQuestions / totalQuestions) * 100;
             
-            survey.style.display = 'none';
-            resultsDiv.style.display = 'block';
+            document.querySelector('.progress-bar').style.width = `${progressPercent}%`;
             
-            let summary = '<div style="margin-top: 20px;">';
-            Object.entries(results).forEach(([question, value]) => {
-                if (question === 'q1' || question === 'q2') {
-                    summary += `<p>Question ${question.substring(1)}: ${value}</p>`;
-                } else {
-                    summary += `<p>Question ${question.substring(1)}: ${value}/5</p>`;
+            document.querySelectorAll('fieldset').forEach(fieldset => {
+                const totalInSection = fieldset.querySelectorAll('.question').length;
+                const answeredInSection = fieldset.querySelectorAll('.question.answered').length;
+                const progressIndicator = fieldset.querySelector('.progress-indicator');
+                
+                if (progressIndicator) {
+                    progressIndicator.textContent = `${answeredInSection}/${totalInSection}`;
+                    if (answeredInSection === totalInSection) {
+                        progressIndicator.classList.add('complete');
+                    }
                 }
             });
-            summary += '</div>';
-            
-            summaryDiv.innerHTML = summary;
         }
 
-        document.getElementById('prevBtn').addEventListener('click', () => {
-            if (currentQuestion > 1) {
-                currentQuestion--;
-                showQuestion(currentQuestion);
-            }
-        });
-
-        document.getElementById('nextBtn').addEventListener('click', () => {
-            const currentInput = document.querySelector(`input[name="q${currentQuestion}"]:checked`);
+        function updateProgressSummary() {
+            const totalQuestions = document.querySelectorAll('.question').length;
+            const answeredQuestions = document.querySelectorAll('.question.answered').length;
             
-            if (!currentInput) {
-                alert('Please select an answer before proceeding.');
-                return;
+            const progressCount = document.querySelector('.progress-summary .progress-count');
+            if (progressCount) {
+                progressCount.textContent = `${answeredQuestions}/${totalQuestions}`;
             }
 
-            if (currentQuestion < totalQuestions) {
-                currentQuestion++;
-                showQuestion(currentQuestion);
-            } else {
-                const results = calculateResults();
-                displayResults(results);
+            const progressSummary = document.querySelector('.progress-summary');
+            if (progressSummary) {
+                const progressPercentage = (answeredQuestions / totalQuestions) * 100;
+                
+                if (progressPercentage === 100) {
+                    progressSummary.style.backgroundColor = 'var(--success-color)';
+                    progressSummary.style.color = 'white';
+                } else if (progressPercentage >= 50) {
+                    progressSummary.style.backgroundColor = 'var(--accent-color)';
+                    progressSummary.style.color = 'white';
+                }
+
+                progressSummary.classList.add('progress-update');
+                setTimeout(() => progressSummary.classList.remove('progress-update'), 300);
             }
-        });
+        }
+
+        function highlightNextUnanswered() {
+            const unanswered = document.querySelector('.question:not(.answered)');
+            if (unanswered) {
+                unanswered.classList.add('highlight');
+                unanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => {
+                    unanswered.classList.remove('highlight');
+                }, 600);
+            }
+        }
+
+        function showWelcomeScreen() {
+            const overlay = document.createElement('div');
+            overlay.className = 'welcome-overlay';
+            overlay.innerHTML = `
+                <div class="welcome-content">
+                    <h2>Welcome to the ChatGPT Opinion Survey</h2>
+                    <p>This survey will help us understand your attitudes and beliefs about ChatGPT and its impact on academic work.</p>
+                    <p>Take your time and answer thoughtfully.</p>
+                    <button onclick="startSurvey()" class="action-button">Begin Survey</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function startSurvey() {
+            const overlay = document.querySelector('.welcome-overlay');
+            const content = document.querySelector('.welcome-content');
+            content.classList.add('hide');
+            overlay.classList.add('hide');
+            setTimeout(() => overlay.remove(), 500);
+            startTimer();
+        }
+
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === '?' && e.shiftKey) {
+                    toggleShortcutsPanel();
+                }
+                if (e.key === 'n') {
+                    highlightNextUnanswered();
+                }
+                if (e.key === 'Escape') {
+                    hideShortcutsPanel();
+                }
+                if (e.key >= '1' && e.key <= '5') {
+                    const focused = document.querySelector('.question:focus-within');
+                    if (focused) {
+                        const options = focused.querySelectorAll('.answer-option');
+                        options[parseInt(e.key) - 1]?.click();
+                    }
+                }
+            });
+        }
+
+        function validateForm(event) {
+            event.preventDefault();
+            logDebug('Form submission attempted');
+            
+            const questions = document.querySelectorAll('.question');
+            let unanswered = [];
+
+            questions.forEach(question => {
+                question.classList.remove('unanswered');
+                const answerGrid = question.querySelector('.answer-grid');
+                const hasAnswer = answerGrid.querySelector('.answer-option.selected');
+                
+                if (!hasAnswer) {
+                    unanswered.push(question);
+                    question.classList.add('unanswered');
+                }
+            });
+
+            if (unanswered.length > 0) {
+                showValidationError(unanswered.length);
+                unanswered[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return false;
+            }
+
+            const responses = getStoredResponses();
+            calculateScores(responses);
+            return true;
+        }
+
+        function calculateScores(responses) {
+            const subscales = {
+                concerns: ['q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10'],
+                enthusiasm: ['q11', 'q12', 'q13', 'q14'],
+                usage: ['q15', 'q16', 'q17', 'q18', 'q19', 'q20', 'q21']
+            };
+
+            const scores = {};
+            for (const [scale, questions] of Object.entries(subscales)) {
+                scores[scale] = calculateMean(responses, questions);
+            }
+
+            const interpretations = {
+                concerns: interpretConcernsScore(scores.concerns),
+                enthusiasm: interpretEnthusiasmScore(scores.enthusiasm),
+                usage: interpretUsageScore(scores.usage)
+            };
+
+            const surveyData = {
+                responses: responses,
+                scores: scores,
+                interpretations: interpretations,
+                metadata: {
+                    timestamp: new Date().toISOString(),
+                    completionTime: new Date() - startTime,
+                    userAgent: navigator.userAgent,
+                    language: navigator.language
+                }
+            };
+
+            displayResults(surveyData);
+            saveResponse(surveyData);
+        }
+
+        function calculateMean(responses, questions) {
+            const values = questions.map(q => parseInt(responses[q])).filter(v => !isNaN(v));
+            return (values.reduce((a, b) => a + b, 0) / values.length).toFixed(2);
+        }
+
+        function interpretConcernsScore(score) {
+            if (score >= 4) return "High level of concern";
+            if (score >= 3) return "Moderate level of concern";
+            return "Low level of concern";
+        }
+
+        function interpretEnthusiasmScore(score) {
+            if (score >= 4) return "High enthusiasm";
+            if (score >= 3) return "Moderate enthusiasm";
+            return "Low enthusiasm";
+        }
+
+        function interpretUsageScore(score) {
+            if (score >= 4) return "High usage tendency";
+            if (score >= 3) return "Moderate usage tendency";
+            return "Low usage tendency";
+        }
+
+        function displayResults(data) {
+            document.getElementById('survey').style.display = 'none';
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+
+            // Update scores and interpretations
+            Object.entries(data.scores).forEach(([category, score]) => {
+                const card = document.querySelector(`#results .result-card:nth-child(${Object.keys(data.scores).indexOf(category) + 1})`);
+                if (card) {
+                    card.querySelector('.score').textContent = score;
+                    card.querySelector('.interpretation').textContent = data.interpretations[category];
+                }
+            });
+
+            document.querySelector('.results-timestamp').textContent = new Date().toLocaleString();
+            results.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function saveResponse(data) {
+            try {
+                const responses = JSON.parse(localStorage.getItem('survey_responses') || '[]');
+                responses.push(data);
+                localStorage.setItem('survey_responses', JSON.stringify(responses));
+                
+                // Export to CSV
+                exportToCSV([data]);
+                
+                logDebug('Response saved successfully');
+            } catch (error) {
+                logDebug('Error saving response:', error);
+                showAlert('There was an error saving your response', 'error');
+            }
+        }
+
+        function exportToCSV(data) {
+            const headers = [
+                'timestamp',
+                'concerns_score',
+                'enthusiasm_score',
+                'usage_score',
+                'completion_time',
+                ...Object.keys(data[0].responses)
+            ];
+
+            const rows = data.map(d => [
+                d.metadata.timestamp,
+                d.scores.concerns,
+                d.scores.enthusiasm,
+                d.scores.usage,
+                d.metadata.completionTime,
+                ...Object.values(d.responses)
+            ]);
+
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `chatgpt_survey_${new Date().toISOString()}.csv`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         // Initialize
-        showQuestion(1);
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+
+            // Setup event listeners
+            document.querySelectorAll('.answer-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const questionId = option.closest('.answer-grid').dataset.questionId;
+                    const value = option.dataset.value;
+                    selectAnswer(questionId, value, option);
+                });
+            });
+
+            document.getElementById('survey-form').addEventListener('submit', validateForm);
+            
+            setupKeyboardShortcuts();
+            showWelcomeScreen();
+            
+            logDebug('Survey initialized');
+        });
     </script>
 </body>
 </html> 
