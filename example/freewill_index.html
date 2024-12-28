@@ -1,0 +1,2379 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free Will Synthesis Survey - A research survey about beliefs in free will, determinism, and related concepts">
+    <title>Free Will Synthesis Survey - Exploring Beliefs About Choice, Determinism & Human Agency</title>
+    <style>
+        :root {
+            /* Light theme - Solarized Tokyo Day */
+            --bg-primary: #f0f1f5;
+            --bg-secondary: #e5e7eb;
+            --text-primary: #1a1b26;
+            --text-secondary: #4c505e;
+            --accent-color: #7aa2f7;
+            --accent-hover: #5d7ce6;
+            --border-color: #9699a3;
+            --error-color: #f7768e;
+            --success-color: #9ece6a;
+            --warning-color: #e0af68;
+            --info-color: #2ac3de;
+            --fieldset-bg: #ffffff;
+            --select-bg: #ffffff;
+            --select-border: #c0caf5;
+            --button-bg: #7aa2f7;
+            --button-text: #ffffff;
+            --button-hover: #5d7ce6;
+            --shadow-color: rgba(26, 27, 38, 0.1);
+            --highlight-color: rgba(122, 162, 247, 0.1);
+            --validation-bg: rgba(122, 162, 247, 0.05);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme - Tokyo Night */
+            --bg-primary: #1a1b26;
+            --bg-secondary: #24283b;
+            --text-primary: #c0caf5;
+            --text-secondary: #9aa5ce;
+            --accent-color: #7aa2f7;
+            --accent-hover: #89b4fa;
+            --border-color: #414868;
+            --error-color: #f7768e;
+            --success-color: #9ece6a;
+            --warning-color: #e0af68;
+            --info-color: #2ac3de;
+            --fieldset-bg: #1f2335;
+            --select-bg: #24283b;
+            --select-border: #414868;
+            --button-bg: #7aa2f7;
+            --button-text: #1a1b26;
+            --button-hover: #89b4fa;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --highlight-color: rgba(122, 162, 247, 0.1);
+            --validation-bg: rgba(122, 162, 247, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        header {
+            background-color: var(--bg-secondary);
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            position: relative;
+        }
+
+        .theme-switch {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-switch button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: var(--text-primary);
+        }
+
+        .theme-switch button:hover {
+            background-color: var(--shadow-color);
+        }
+
+        main {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        fieldset {
+            background-color: var(--fieldset-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        legend {
+            color: var(--accent-color);
+            font-weight: bold;
+            padding: 0 0.5rem;
+        }
+
+        .question {
+            margin-bottom: 1.5rem;
+            transform: translateY(0);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        .question:hover {
+            transform: translateY(-2px);
+        }
+
+        .question.answered {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .answer-option {
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: var(--bg-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .answer-option:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .answer-option.selected {
+            background-color: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        .answer-option::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background-color: var(--accent-color);
+            opacity: 0.3;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .answer-option:active::before {
+            width: 200%;
+            height: 200%;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .question.highlight {
+            animation: pulse 0.6s ease;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background-color: var(--accent-color);
+            transition: width 0.3s ease;
+            z-index: 1000;
+        }
+
+        .fieldset-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .progress-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--border-color);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .progress-dot.active {
+            background-color: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 600px) {
+            .answer-grid {
+                grid-template-columns: repeat(5, 1fr);
+                font-size: 0.9rem;
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--select-border);
+            border-radius: 4px;
+            background-color: var(--select-bg);
+            color: var(--text-primary);
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(9, 132, 227, 0.2);
+        }
+
+        .form-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button[type="reset"] {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        button[type="reset"]:hover {
+            background-color: var(--border-color);
+        }
+
+        .alert {
+            background-color: var(--error-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        #results {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        #results h2 {
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+
+        #results p {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 1rem;
+            }
+            
+            fieldset {
+                padding: 1rem;
+            }
+            
+            .form-controls {
+                flex-direction: column;
+            }
+            
+            .theme-switch {
+                position: static;
+                justify-content: center;
+                margin-top: 1rem;
+            }
+        }
+
+        .alert.success {
+            background-color: var(--success-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .alert.error {
+            background-color: var(--error-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .popup-alert {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--error-color);
+            color: white;
+            padding: 1.5rem 3rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            z-index: 1000;
+            animation: fadeInOutLonger 2s ease-in-out forwards;
+            text-align: center;
+            font-weight: bold;
+            opacity: 0;
+        }
+
+        @keyframes fadeInOutLonger {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            10% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        .timer {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background-color: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px var(--shadow-color);
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            z-index: 100;
+        }
+
+        @media (max-width: 600px) {
+            .timer {
+                position: static;
+                margin: 1rem auto;
+                width: fit-content;
+            }
+        }
+
+        .modern-footer {
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            box-shadow: 0 -2px 10px var(--shadow-color);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .footer-left, .footer-center, .footer-right {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .footer-center {
+            text-align: center;
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .social-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .social-link:hover {
+            color: var(--accent-color);
+            background-color: var(--bg-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .social-link i {
+            font-size: 1.2rem;
+        }
+
+        .footer-divider {
+            width: 100%;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 2rem 0;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-right {
+                text-align: center;
+            }
+
+            .social-links {
+                justify-content: center;
+            }
+        }
+
+        .welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
+        .welcome-content {
+            text-align: center;
+            max-width: 600px;
+            padding: 2rem;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            box-shadow: 0 8px 32px var(--shadow-color);
+            transform: translateY(0);
+            transition: transform 0.5s ease-out;
+        }
+
+        .welcome-content.hide {
+            transform: translateY(-20px);
+        }
+
+        .welcome-overlay.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .progress-indicator-container {
+            position: fixed;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .section-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--border-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .section-indicator:hover::after {
+            content: attr(data-section);
+            position: absolute;
+            left: 24px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px var(--shadow-color);
+        }
+
+        .section-indicator.active {
+            background: var(--accent-color);
+            transform: scale(1.2);
+        }
+
+        .floating-help {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent-color);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .floating-help:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        .help-tooltip {
+            position: absolute;
+            bottom: 100%;
+            right: 0;
+            width: 250px;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .floating-help:hover .help-tooltip {
+            display: block;
+        }
+
+        .keyboard-shortcuts {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            display: none;
+            z-index: 100;
+        }
+
+        .keyboard-shortcuts.show {
+            display: block;
+        }
+
+        .shortcut-key {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background: var(--bg-primary);
+            border-radius: 4px;
+            margin: 0 0.2rem;
+            font-family: monospace;
+            border: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .progress-indicator-container {
+                display: none;
+            }
+        }
+
+        .confirm-dialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .confirm-content {
+            background: var(--bg-secondary);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .confirm-yes, .confirm-no {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .confirm-yes {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .confirm-no {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .confirm-yes:hover, .confirm-no:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px var(--shadow-color);
+        }
+
+        .closing-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .closing-content {
+            text-align: center;
+            max-width: 600px;
+            padding: 3rem;
+            border-radius: 12px;
+            background: var(--bg-secondary);
+            box-shadow: 0 8px 32px var(--shadow-color);
+            transform: translateY(20px);
+            animation: slideUp 0.5s ease-out forwards;
+        }
+
+        .closing-content h2 {
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+        }
+
+        .closing-content p {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .closing-actions {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .closing-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        .closing-button.primary {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .closing-button.secondary {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .closing-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .question.unanswered {
+            animation: shake 0.5s ease-in-out;
+            border-left: 3px solid var(--error-color);
+            padding-left: 1rem;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .error-summary {
+            background-color: var(--error-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .error-summary.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .error-summary i {
+            font-size: 1.5rem;
+        }
+
+        .error-pulse {
+            animation: errorPulse 2s infinite;
+        }
+
+        @keyframes errorPulse {
+            0% { box-shadow: 0 0 0 0 rgba(214, 48, 49, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(214, 48, 49, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(214, 48, 49, 0); }
+        }
+
+        .validation-status {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-secondary);
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            z-index: 99;
+            transition: all 0.3s ease;
+        }
+
+        .validation-status.hidden {
+            transform: translateY(-50%) translateX(120%);
+        }
+
+        .validation-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .validation-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .validation-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .validation-item.valid i {
+            color: var(--success-color);
+        }
+
+        .validation-item.invalid i {
+            color: var(--error-color);
+        }
+
+        .question-tooltip {
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--error-color);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .question.unanswered:hover .question-tooltip {
+            opacity: 1;
+            right: -5px;
+        }
+
+        .progress-summary {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bg-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 24px;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 98;
+            transition: all 0.3s ease;
+        }
+
+        .progress-summary .progress-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.4rem 1rem;
+            border-radius: 15px;
+            background: var(--bg-primary);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .progress-summary .progress-pill i {
+            font-size: 1rem;
+        }
+
+        .progress-summary.progress-update {
+            animation: progressPulse 0.3s ease;
+        }
+
+        @keyframes progressPulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        .validation-badge {
+            position: absolute;
+            right: -10px;
+            top: -10px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .question.answered .validation-badge {
+            background: var(--success-color);
+            border-color: var(--success-color);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .validation-pulse {
+            animation: validationPulse 2s infinite;
+        }
+
+        @keyframes validationPulse {
+            0% { box-shadow: 0 0 0 0 var(--highlight-color); }
+            70% { box-shadow: 0 0 0 10px transparent; }
+            100% { box-shadow: 0 0 0 0 transparent; }
+        }
+
+        .validation-progress {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--validation-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .validation-category {
+            margin-bottom: 1rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .validation-category:hover {
+            background: var(--highlight-color);
+        }
+
+        .validation-category.complete {
+            border-left: 3px solid var(--success-color);
+        }
+
+        .validation-category.incomplete {
+            border-left: 3px solid var(--warning-color);
+        }
+
+        .validation-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            font-size: 12px;
+        }
+
+        .validation-icon.success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .validation-icon.warning {
+            background: var(--warning-color);
+            color: white;
+        }
+    </style>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js" defer></script>
+    <!-- Add debug mode toggle -->
+    <script>
+        const DEBUG = false; // Set to true to enable debug mode
+        
+        function logDebug(message) {
+            if (DEBUG) {
+                console.log(`[DEBUG] ${message}`);
+            }
+        }
+
+        function validateForm(event) {
+            event.preventDefault();
+            logDebug('Form submission attempted');
+            
+            const form = document.getElementById('survey-form');
+            const questions = form.querySelectorAll('.question');
+            let unansweredQuestions = [];
+
+            // Remove previous error states
+            questions.forEach(question => {
+                question.classList.remove('unanswered');
+            });
+
+            // Check each question
+            questions.forEach(question => {
+                const answerGrid = question.querySelector('.answer-grid');
+                const hasAnswer = answerGrid.querySelector('.answer-option.selected');
+                
+                if (!hasAnswer) {
+                    unansweredQuestions.push(question);
+                    question.classList.add('unanswered');
+                }
+            });
+
+            if (unansweredQuestions.length > 0) {
+                // Show error message
+                showValidationError(unansweredQuestions.length);
+                
+                // Scroll to first unanswered question
+                unansweredQuestions[0].scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center' 
+                });
+
+                return false;
+            }
+
+            // Collect responses if all questions are answered
+            const responses = {};
+            questions.forEach(question => {
+                const questionId = question.querySelector('.answer-grid').getAttribute('data-question-id');
+                const selectedOption = question.querySelector('.answer-option.selected');
+                responses[questionId] = parseInt(selectedOption.getAttribute('data-value'));
+            });
+
+            logDebug('Form is valid. Responses:', responses);
+            calculateScores(responses);
+            return true;
+        }
+
+        function showValidationError(count) {
+            // Remove any existing error summaries
+            const existingError = document.querySelector('.error-summary');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Create new error summary
+            const errorSummary = document.createElement('div');
+            errorSummary.className = 'error-summary';
+            errorSummary.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <div>
+                    <h4>Incomplete Survey</h4>
+                    <p>Please answer ${count} remaining question${count > 1 ? 's' : ''} before submitting.</p>
+                </div>
+            `;
+
+            // Insert error summary at the top of the form
+            const form = document.getElementById('survey-form');
+            form.insertBefore(errorSummary, form.firstChild);
+
+            // Trigger animation
+            setTimeout(() => errorSummary.classList.add('show'), 10);
+
+            // Show popup alert
+            showPopupAlert(`Please complete all ${count} remaining question${count > 1 ? 's' : ''}`);
+        }
+
+        function calculateScores(responses) {
+            // Updated question groupings with new numbering
+            const subscales = {
+                philosophical: ['q1', 'q2'],
+                freeWill: ['q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9'],
+                determinism: ['q10', 'q11'],
+                randomness: ['q12', 'q13', 'q14', 'q15', 'q16', 'q17']
+            };
+
+            const scores = {};
+            for (const [scale, questions] of Object.entries(subscales)) {
+                scores[scale] = calculateMean(responses, questions);
+            }
+
+            // Calculate interpretations based on scores
+            const interpretations = {
+                philosophical: interpretPhilosophicalScore(scores.philosophical),
+                freeWill: interpretFreeWillScore(scores.freeWill),
+                determinism: interpretDeterminismScore(scores.determinism),
+                randomness: interpretRandomnessScore(scores.randomness)
+            };
+
+            logDebug('Calculated scores:', scores);
+            
+            const surveyData = {
+                responses: responses,
+                scores: scores,
+                interpretations: interpretations,
+                metadata: {
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    language: navigator.language
+                }
+            };
+
+            submitToBackend(surveyData);
+        }
+
+        function interpretFreeWillScore(score) {
+            if (score >= 4) return "Strong belief in free will";
+            if (score >= 3) return "Moderate belief in free will";
+            return "Limited belief in free will";
+        }
+
+        function interpretRandomnessScore(score) {
+            if (score >= 4) return "Strong belief in randomness";
+            if (score >= 3) return "Moderate belief in randomness";
+            return "Limited belief in randomness";
+        }
+
+        function interpretDeterminismScore(score) {
+            if (score >= 4) return "Strong belief in determinism";
+            if (score >= 3) return "Moderate belief in determinism";
+            return "Limited belief in determinism";
+        }
+
+        function interpretPhilosophicalScore(score) {
+            if (score >= 4) return "Strong philosophical understanding";
+            if (score >= 3) return "Moderate philosophical understanding";
+            return "Basic philosophical understanding";
+        }
+
+        function displayResults(scores, interpretations) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = `
+                <h2>Survey Results</h2>
+                <div class="score-section">
+                    <h3>Free Will</h3>
+                    <p>Score: ${scores.freeWill}</p>
+                    <p>Interpretation: ${interpretations.freeWill}</p>
+                </div>
+                <div class="score-section">
+                    <h3>Randomness</h3>
+                    <p>Score: ${scores.randomness}</p>
+                    <p>Interpretation: ${interpretations.randomness}</p>
+                </div>
+                <div class="score-section">
+                    <h3>Determinism</h3>
+                    <p>Score: ${scores.determinism}</p>
+                    <p>Interpretation: ${interpretations.determinism}</p>
+                </div>
+                <div class="score-section">
+                    <h3>Philosophical Understanding</h3>
+                    <p>Score: ${scores.philosophical}</p>
+                    <p>Interpretation: ${interpretations.philosophical}</p>
+                </div>
+            `;
+            resultsDiv.style.display = 'block';
+            
+            // Scroll to results
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            logDebug('Results displayed to user');
+        }
+
+        // Local Storage Keys
+        const STORAGE_KEYS = {
+            RESPONSES: 'survey_responses',
+            STATS: 'survey_stats'
+        };
+
+        // Initialize storage if not exists
+        function initializeStorage() {
+            if (!localStorage.getItem(STORAGE_KEYS.RESPONSES)) {
+                localStorage.setItem(STORAGE_KEYS.RESPONSES, JSON.stringify([]));
+            }
+            if (!localStorage.getItem(STORAGE_KEYS.STATS)) {
+                localStorage.setItem(STORAGE_KEYS.STATS, JSON.stringify({
+                    totalResponses: 0,
+                    averageScores: {},
+                    lastResponse: null
+                }));
+            }
+            logDebug('Storage initialized');
+        }
+
+        // Save response to local storage
+        function saveResponse(data) {
+            try {
+                // Get existing responses
+                const responses = JSON.parse(localStorage.getItem(STORAGE_KEYS.RESPONSES) || '[]');
+                
+                // Add new response
+                responses.push({
+                    id: responses.length + 1,
+                    ...data,
+                    timestamp: new Date().toISOString()
+                });
+
+                // Save updated responses
+                localStorage.setItem(STORAGE_KEYS.RESPONSES, JSON.stringify(responses));
+                
+                // Update stats
+                updateStats(responses);
+                
+                // Export to CSV
+                exportToCSV(responses);
+                
+                logDebug('Response saved successfully');
+                return true;
+            } catch (error) {
+                logDebug('Error saving response:', error);
+                return false;
+            }
+        }
+
+        // Update statistics
+        function updateStats(responses) {
+            const stats = {
+                totalResponses: responses.length,
+                averageScores: calculateAverageScores(responses),
+                lastResponse: responses[responses.length - 1]?.timestamp
+            };
+            localStorage.setItem(STORAGE_KEYS.STATS, JSON.stringify(stats));
+            logDebug('Stats updated');
+        }
+
+        // Calculate average scores
+        function calculateAverageScores(responses) {
+            const totals = {};
+            const counts = {};
+
+            responses.forEach(response => {
+                Object.entries(response.scores).forEach(([key, value]) => {
+                    totals[key] = (totals[key] || 0) + parseFloat(value);
+                    counts[key] = (counts[key] || 0) + 1;
+                });
+            });
+
+            const averages = {};
+            Object.keys(totals).forEach(key => {
+                averages[key] = (totals[key] / counts[key]).toFixed(2);
+            });
+
+            return averages;
+        }
+
+        // Export to CSV
+        function exportToCSV(responses) {
+            try {
+                // Prepare CSV headers
+                const headers = [
+                    'id',
+                    'timestamp',
+                    ...Object.keys(responses[0]?.responses || {}).map(q => `response_${q}`),
+                    ...Object.keys(responses[0]?.scores || {}).map(s => `score_${s}`),
+                    'completionTime',
+                    'userAgent',
+                    'language'
+                ];
+
+                // Prepare CSV rows
+                const rows = responses.map(r => [
+                    r.id,
+                    r.timestamp,
+                    ...Object.values(r.responses),
+                    ...Object.values(r.scores),
+                    r.metadata.completionTimeFormatted,
+                    r.metadata.userAgent,
+                    r.metadata.language
+                ]);
+
+                // Create CSV content
+                const csvContent = [
+                    headers.join(','),
+                    ...rows.map(row => row.join(','))
+                ].join('\n');
+
+                // Create download link
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `survey_responses_${new Date().toISOString()}.csv`;
+                
+                // Trigger download
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                logDebug('CSV exported successfully');
+            } catch (error) {
+                logDebug('Error exporting CSV:', error);
+            }
+        }
+
+        // Update the existing submitToBackend function
+        async function submitToBackend(data) {
+            const currentTime = new Date();
+            const elapsedMilliseconds = currentTime - startTime;
+            data.metadata.completionTimeMs = elapsedMilliseconds;
+            data.metadata.completionTimeFormatted = `${Math.floor(elapsedMilliseconds/60000)}:${((elapsedMilliseconds%60000)/1000).toFixed(0).padStart(2,'0')}`;
+
+            try {
+                // Show loading state
+                const submitButton = document.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Submitting...';
+
+                // Save to local storage instead of sending to server
+                const saved = saveResponse(data);
+
+                if (!saved) {
+                    throw new Error('Failed to save response');
+                }
+
+                // Display results
+                displayResults(data.scores, data.interpretations);
+                
+                // Show closing screen after a brief delay
+                setTimeout(() => {
+                    showClosingScreen(data);
+                }, 1500);
+
+            } catch (error) {
+                logDebug('Error submitting survey:', error);
+                showAlert('There was an error submitting your survey. Please try again later.', 'error');
+            }
+        }
+
+        // Add download button for individual response
+        function addDownloadButton(data) {
+            const downloadButton = document.createElement('button');
+            downloadButton.textContent = 'Download Your Response';
+            downloadButton.className = 'download-button';
+            downloadButton.onclick = () => {
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `survey_response_${new Date().toISOString()}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            };
+            document.getElementById('results').appendChild(downloadButton);
+        }
+
+        function showAlert(message, type = 'error') {
+            // Remove any existing alerts
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+
+            // Create and show new alert
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            document.getElementById('survey-form').insertAdjacentElement('beforebegin', alert);
+
+            // Auto-hide alert after 5 seconds
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        function calculateMean(responses, questions) {
+            const sum = questions.reduce((acc, q) => acc + (responses[q] || 0), 0);
+            return (sum / questions.length).toFixed(2);
+        }
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            logDebug(`Theme switched to ${newTheme} mode`);
+        }
+
+        // Initialize theme
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            logDebug(`Theme initialized to ${savedTheme} mode`);
+        });
+
+        // Initialize debug features when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            logDebug('Survey initialized');
+            document.getElementById('survey-form').addEventListener('submit', validateForm);
+        });
+
+        function showPopupAlert(message) {
+            // Remove any existing popup
+            const existingPopup = document.querySelector('.popup-alert');
+            if (existingPopup) {
+                existingPopup.remove();
+            }
+
+            // Create and show new popup
+            const popup = document.createElement('div');
+            popup.className = 'popup-alert';
+            popup.textContent = message;
+            document.body.appendChild(popup);
+
+            // Remove popup after animation completes (2 seconds)
+            setTimeout(() => {
+                popup.remove();
+            }, 2000);
+        }
+
+        // Timer functionality
+        let startTime;
+        let timerInterval;
+
+        function startTimer() {
+            startTime = new Date();
+            
+            // Create timer element
+            const timerElement = document.createElement('div');
+            timerElement.className = 'timer';
+            timerElement.id = 'survey-timer';
+            document.body.appendChild(timerElement);
+
+            // Initialize progress summary if not exists
+            if (!document.querySelector('.progress-summary')) {
+                const summary = document.createElement('div');
+                summary.className = 'progress-summary';
+                summary.innerHTML = `
+                    <div class="progress-pill">
+                        <i class="fas fa-tasks"></i>
+                        <span class="progress-count">0/17</span>
+                    </div>
+                    <div class="progress-pill">
+                        <i class="fas fa-clock"></i>
+                        <span class="elapsed-time">00:00</span>
+                    </div>
+                `;
+                document.body.appendChild(summary);
+            }
+
+            // Start timer interval
+            timerInterval = setInterval(updateTimer, 1000);
+            updateProgressSummary(); // Initial progress update
+        }
+
+        function updateTimer() {
+            const currentTime = new Date();
+            const elapsedTime = new Date(currentTime - startTime);
+            const minutes = elapsedTime.getMinutes().toString().padStart(2, '0');
+            const seconds = elapsedTime.getSeconds().toString().padStart(2, '0');
+            
+            // Update timer in header
+            const timerElement = document.getElementById('survey-timer');
+            if (timerElement) {
+                timerElement.textContent = `Time: ${minutes}:${seconds}`;
+            }
+
+            // Update elapsed time in progress summary
+            const elapsedTimeElement = document.querySelector('.progress-summary .elapsed-time');
+            if (elapsedTimeElement) {
+                elapsedTimeElement.textContent = `${minutes}:${seconds}`;
+            }
+        }
+
+        function initializeEnhancedUI() {
+            // Create progress bar
+            const progressBar = document.createElement('div');
+            progressBar.className = 'progress-bar';
+            document.body.appendChild(progressBar);
+
+            // Replace all select elements with custom answer grids
+            document.querySelectorAll('select').forEach(select => {
+                const question = select.closest('.question');
+                const answerId = select.id;
+                
+                // Create answer grid
+                const answerGrid = document.createElement('div');
+                answerGrid.className = 'answer-grid';
+                answerGrid.setAttribute('data-question-id', answerId);
+                
+                // Create answer options
+                for (let i = 1; i <= 5; i++) {
+                    const option = document.createElement('div');
+                    option.className = 'answer-option';
+                    option.textContent = i;
+                    option.setAttribute('data-value', i);
+                    option.onclick = () => selectAnswer(answerId, i, option, question);
+                    answerGrid.appendChild(option);
+                }
+                
+                // Replace select with grid
+                select.replaceWith(answerGrid);
+            });
+
+            // Add progress indicators to fieldsets
+            document.querySelectorAll('fieldset').forEach(fieldset => {
+                const questions = fieldset.querySelectorAll('.question');
+                const progress = document.createElement('div');
+                progress.className = 'fieldset-progress';
+                progress.innerHTML = `
+                    <span>${fieldset.querySelector('legend').textContent}</span>
+                    <div class="progress-indicator">
+                        <span>0/${questions.length}</span>
+                        <div class="progress-dot"></div>
+                    </div>
+                `;
+                fieldset.insertBefore(progress, fieldset.firstChild);
+            });
+
+            updateProgress();
+        }
+
+        function selectAnswer(questionId, value, selectedOption, questionDiv) {
+            // Remove previous selection
+            questionDiv.querySelectorAll('.answer-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add new selection
+            selectedOption.classList.add('selected');
+            
+            // Only add answered class if not already present
+            if (!questionDiv.classList.contains('answered')) {
+                questionDiv.classList.add('answered');
+            }
+            
+            // Store the answer
+            const responses = getStoredResponses();
+            responses[questionId] = value;
+            localStorage.setItem('current_responses', JSON.stringify(responses));
+            
+            // Update progress indicators
+            updateProgress();
+            updateProgressSummary();
+            
+            // Highlight next unanswered question
+            highlightNextUnanswered();
+        }
+
+        function getStoredResponses() {
+            return JSON.parse(localStorage.getItem('current_responses') || '{}');
+        }
+
+        function updateProgress() {
+            const totalQuestions = document.querySelectorAll('.question').length;
+            const answeredQuestions = document.querySelectorAll('.question.answered').length;
+            const progressPercent = (answeredQuestions / totalQuestions) * 100;
+            
+            // Update progress bar
+            document.querySelector('.progress-bar').style.width = `${progressPercent}%`;
+            
+            // Update fieldset progress
+            document.querySelectorAll('fieldset').forEach(fieldset => {
+                const totalInSection = fieldset.querySelectorAll('.question').length;
+                const answeredInSection = fieldset.querySelectorAll('.question.answered').length;
+                const progressIndicator = fieldset.querySelector('.progress-indicator span');
+                const progressDot = fieldset.querySelector('.progress-dot');
+                
+                progressIndicator.textContent = `${answeredInSection}/${totalInSection}`;
+                if (answeredInSection === totalInSection) {
+                    progressDot.classList.add('active');
+                } else {
+                    progressDot.classList.remove('active');
+                }
+            });
+        }
+
+        function highlightNextUnanswered() {
+            const unanswered = document.querySelector('.question:not(.answered)');
+            if (unanswered) {
+                unanswered.classList.add('highlight');
+                unanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => {
+                    unanswered.classList.remove('highlight');
+                }, 600);
+            }
+        }
+
+        // Welcome overlay
+        function showWelcomeScreen() {
+            const overlay = document.createElement('div');
+            overlay.className = 'welcome-overlay';
+            overlay.innerHTML = `
+                <div class="welcome-content">
+                    <h2>Welcome to the Free Will Synthesis Survey</h2>
+                    <p>This survey will help us understand your beliefs about free will, determinism, and randomness.</p>
+                    <p>Take your time and answer thoughtfully.</p>
+                    <button onclick="startSurvey()" class="start-button">Begin Survey</button>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+        }
+
+        function startSurvey() {
+            const overlay = document.querySelector('.welcome-overlay');
+            const content = document.querySelector('.welcome-content');
+            content.classList.add('hide');
+            overlay.classList.add('hide');
+            setTimeout(() => overlay.remove(), 500);
+        }
+
+        // Section indicators
+        function createSectionIndicators() {
+            const container = document.createElement('div');
+            container.className = 'progress-indicator-container';
+            
+            document.querySelectorAll('fieldset').forEach((fieldset, index) => {
+                const indicator = document.createElement('div');
+                indicator.className = 'section-indicator';
+                indicator.setAttribute('data-section', fieldset.querySelector('legend').textContent);
+                indicator.onclick = () => scrollToSection(fieldset);
+                container.appendChild(indicator);
+            });
+            
+            document.body.appendChild(container);
+            updateSectionIndicators();
+        }
+
+        function updateSectionIndicators() {
+            const indicators = document.querySelectorAll('.section-indicator');
+            const sections = document.querySelectorAll('fieldset');
+            
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+                    indicators[index].classList.add('active');
+                } else {
+                    indicators[index].classList.remove('active');
+                }
+            });
+        }
+
+        function scrollToSection(section) {
+            section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Keyboard shortcuts
+        function setupKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === '?' && e.shiftKey) {
+                    toggleShortcutsPanel();
+                }
+                if (e.key === 'n') {
+                    highlightNextUnanswered();
+                }
+                if (e.key === 'Escape') {
+                    hideShortcutsPanel();
+                }
+            });
+        }
+
+        function toggleShortcutsPanel() {
+            let panel = document.querySelector('.keyboard-shortcuts');
+            if (!panel) {
+                panel = document.createElement('div');
+                panel.className = 'keyboard-shortcuts';
+                panel.innerHTML = `
+                    <h3>Keyboard Shortcuts</h3>
+                    <p><span class="shortcut-key">Shift</span> + <span class="shortcut-key">?</span> Show/hide this panel</p>
+                    <p><span class="shortcut-key">N</span> Jump to next unanswered question</p>
+                    <p><span class="shortcut-key">Esc</span> Close panels</p>
+                    <p><span class="shortcut-key">1-5</span> Select answer for current question</p>
+                `;
+                document.body.appendChild(panel);
+            }
+            panel.classList.toggle('show');
+        }
+
+        function hideShortcutsPanel() {
+            const panel = document.querySelector('.keyboard-shortcuts');
+            if (panel) {
+                panel.classList.remove('show');
+            }
+        }
+
+        // Floating help button
+        function addFloatingHelp() {
+            const help = document.createElement('div');
+            help.className = 'floating-help';
+            help.innerHTML = `
+                <i class="fas fa-question"></i>
+                <div class="help-tooltip">
+                    <h4>Need Help?</h4>
+                    <p>• Click numbers to select your answer</p>
+                    <p>• Use keyboard shortcuts (Shift + ? to view)</p>
+                    <p>• Click section indicators to navigate</p>
+                </div>
+            `;
+            document.body.appendChild(help);
+        }
+
+        function setupClearForm() {
+            const resetButton = document.querySelector('button[type="reset"]');
+            resetButton.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent default reset behavior
+                showConfirmDialog('Are you sure you want to clear all responses?', clearFormCompletely);
+            });
+        }
+
+        function showConfirmDialog(message, onConfirm) {
+            const dialog = document.createElement('div');
+            dialog.className = 'confirm-dialog';
+            dialog.innerHTML = `
+                <div class="confirm-content">
+                    <p>${message}</p>
+                    <div class="confirm-actions">
+                        <button class="confirm-yes">Yes, Clear All</button>
+                        <button class="confirm-no">Cancel</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(dialog);
+            
+            // Add event listeners
+            dialog.querySelector('.confirm-yes').onclick = () => {
+                onConfirm();
+                dialog.remove();
+            };
+            dialog.querySelector('.confirm-no').onclick = () => dialog.remove();
+        }
+
+        function clearFormCompletely() {
+            // Reset all answer selections
+            document.querySelectorAll('.answer-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Remove answered class from questions
+            document.querySelectorAll('.question').forEach(question => {
+                question.classList.remove('answered');
+                question.classList.remove('highlight');
+            });
+
+            // Reset progress indicators
+            document.querySelectorAll('.progress-dot').forEach(dot => {
+                dot.classList.remove('active');
+            });
+
+            // Reset progress bar
+            const progressBar = document.querySelector('.progress-bar');
+            if (progressBar) {
+                progressBar.style.width = '0%';
+            }
+
+            // Reset progress summary
+            updateProgressSummary();
+
+            // Clear stored responses
+            localStorage.removeItem('current_responses');
+
+            // Reset timer if needed
+            resetTimer();
+
+            // Show success message
+            showPopupAlert('Form cleared successfully');
+
+            // Re-enable submit button if it was disabled
+            const submitButton = document.querySelector('button[type="submit"]');
+            if (submitButton) {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit Survey';
+            }
+
+            // Hide results section if visible
+            const results = document.getElementById('results');
+            if (results) {
+                results.style.display = 'none';
+            }
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetTimer() {
+            // Clear existing timer
+            clearInterval(timerInterval);
+            
+            // Reset and restart timer
+            startTime = new Date();
+            timerInterval = setInterval(updateTimer, 1000);
+            
+            // Update timer display
+            const timerElement = document.getElementById('survey-timer');
+            if (timerElement) {
+                timerElement.textContent = 'Time: 00:00';
+            }
+        }
+
+        function initializeValidationStatus() {
+            const status = document.createElement('div');
+            status.className = 'validation-status hidden';
+            status.innerHTML = `
+                <h4>Survey Progress</h4>
+                <ul class="validation-list">
+                    <li class="validation-item" data-check="all-questions">
+                        <i class="fas fa-check-circle"></i>
+                        All questions answered
+                    </li>
+                    <li class="validation-item" data-check="philosophical">
+                        <i class="fas fa-check-circle"></i>
+                        Philosophical Concepts
+                    </li>
+                    <li class="validation-item" data-check="free-will">
+                        <i class="fas fa-check-circle"></i>
+                        Free Will Beliefs
+                    </li>
+                    <li class="validation-item" data-check="determinism">
+                        <i class="fas fa-check-circle"></i>
+                        Determinism
+                    </li>
+                    <li class="validation-item" data-check="randomness">
+                        <i class="fas fa-check-circle"></i>
+                        Randomness
+                    </li>
+                </ul>
+            `;
+            document.body.appendChild(status);
+            
+            // Show validation status after 2 seconds
+            setTimeout(() => status.classList.remove('hidden'), 2000);
+        }
+
+        function updateValidationStatus() {
+            const sections = {
+                'philosophical': ['q1', 'q2'],
+                'free-will': ['q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9'],
+                'determinism': ['q10', 'q11'],
+                'randomness': ['q12', 'q13', 'q14', 'q15', 'q16', 'q17']
+            };
+
+            const responses = getStoredResponses();
+            
+            // Update section status
+            Object.entries(sections).forEach(([section, questions]) => {
+                const isComplete = questions.every(q => responses[q]);
+                const item = document.querySelector(`[data-check="${section}"]`);
+                if (item) {
+                    item.classList.toggle('valid', isComplete);
+                    item.classList.toggle('invalid', !isComplete);
+                    item.querySelector('i').className = isComplete ? 
+                        'fas fa-check-circle' : 'fas fa-exclamation-circle';
+                }
+            });
+
+            // Update overall status
+            const allComplete = Object.values(sections)
+                .flat()
+                .every(q => responses[q]);
+            const allItem = document.querySelector('[data-check="all-questions"]');
+            if (allItem) {
+                allItem.classList.toggle('valid', allComplete);
+                allItem.classList.toggle('invalid', !allComplete);
+                allItem.querySelector('i').className = allComplete ?
+                    'fas fa-check-circle' : 'fas fa-exclamation-circle';
+            }
+
+            // Update progress summary
+            updateProgressSummary();
+        }
+
+        function updateProgressSummary() {
+            const totalQuestions = document.querySelectorAll('.question').length;
+            const answeredQuestions = document.querySelectorAll('.question.answered').length;
+            
+            // Update progress count in summary bubble
+            const progressCount = document.querySelector('.progress-summary .progress-count');
+            if (progressCount) {
+                progressCount.textContent = `${answeredQuestions}/${totalQuestions}`;
+            }
+
+            // Add progress percentage and update bubble style
+            const progressPercentage = (answeredQuestions / totalQuestions) * 100;
+            const progressSummary = document.querySelector('.progress-summary');
+            if (progressSummary) {
+                // Update progress indicator color based on completion
+                if (progressPercentage === 100) {
+                    progressSummary.style.backgroundColor = 'var(--success-color)';
+                    progressSummary.style.color = 'white';
+                } else if (progressPercentage >= 50) {
+                    progressSummary.style.backgroundColor = 'var(--accent-color)';
+                    progressSummary.style.color = 'white';
+                } else {
+                    progressSummary.style.backgroundColor = 'var(--bg-secondary)';
+                    progressSummary.style.color = 'var(--text-primary)';
+                }
+
+                // Add subtle animation on progress update
+                progressSummary.classList.add('progress-update');
+                setTimeout(() => progressSummary.classList.remove('progress-update'), 300);
+            }
+        }
+
+        function enhanceValidation() {
+            // Add validation badges to questions
+            document.querySelectorAll('.question').forEach((question, index) => {
+                const badge = document.createElement('div');
+                badge.className = 'validation-badge';
+                badge.innerHTML = `<i class="fas fa-check"></i>`;
+                question.style.position = 'relative';
+                question.appendChild(badge);
+            });
+
+            // Update validation status with animations
+            function updateValidationStatus() {
+                const categories = document.querySelectorAll('.validation-category');
+                categories.forEach(category => {
+                    const isComplete = category.classList.contains('complete');
+                    if (isComplete) {
+                        category.classList.add('validation-pulse');
+                        setTimeout(() => category.classList.remove('validation-pulse'), 2000);
+                    }
+                });
+            }
+
+            // Add hover tooltips for validation categories
+            document.querySelectorAll('.validation-category').forEach(category => {
+                category.addEventListener('mouseenter', () => {
+                    const questions = category.getAttribute('data-questions').split(',');
+                    questions.forEach(q => {
+                        const question = document.querySelector(`#${q}`).closest('.question');
+                        question.classList.add('validation-pulse');
+                    });
+                });
+
+                category.addEventListener('mouseleave', () => {
+                    document.querySelectorAll('.question').forEach(q => {
+                        q.classList.remove('validation-pulse');
+                    });
+                });
+            });
+        }
+
+        // Update the DOMContentLoaded event listener
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeStorage();
+            startTimer();
+            initializeEnhancedUI();
+            showWelcomeScreen();
+            createSectionIndicators();
+            setupKeyboardShortcuts();
+            addFloatingHelp();
+            setupClearForm();
+            
+            window.addEventListener('scroll', updateSectionIndicators);
+            initializeValidationStatus();
+            initializeProgressSummary();
+            
+            // Add keyboard navigation for questions
+            document.addEventListener('keydown', (e) => {
+                if (e.key >= '1' && e.key <= '5') {
+                    const focused = document.querySelector('.question:focus-within');
+                    if (focused) {
+                        const options = focused.querySelectorAll('.answer-option');
+                        options[parseInt(e.key) - 1]?.click();
+                    }
+                }
+            });
+            enhanceValidation();
+        });
+
+        function showClosingScreen(data) {
+            const overlay = document.createElement('div');
+            overlay.className = 'closing-overlay';
+            overlay.innerHTML = `
+                <div class="closing-content">
+                    <h2>Thank You for Participating!</h2>
+                    <p>Your response has been successfully recorded and saved to your downloads folder.</p>
+                    <p>Your insights will help us better understand perspectives on free will, determinism, and human agency.</p>
+                    <p>The data has been exported in both CSV and JSON formats for your reference.</p>
+                    <div class="download-info">
+                        <p><i class="fas fa-folder-open"></i> Check your downloads folder for:</p>
+                        <ul style="list-style: none; margin: 1rem 0;">
+                            <li><i class="fas fa-file-csv"></i> survey_responses_${new Date().toISOString().split('T')[0]}.csv</li>
+                            <li><i class="fas fa-file-code"></i> survey_response_${new Date().toISOString().split('T')[0]}.json</li>
+                        </ul>
+                    </div>
+                    <p>Have questions or want to learn more?</p>
+                    <div class="closing-actions">
+                        <a href="https://github.com/Exios66" target="_blank" rel="noopener noreferrer" class="closing-button primary">
+                            <i class="fab fa-github"></i> Contact on GitHub
+                        </a>
+                        <button onclick="window.location.reload()" class="closing-button secondary">
+                            <i class="fas fa-redo"></i> Take Survey Again
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+        }
+    </script>
+    <!-- Add Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <!-- Timer will be inserted here by JavaScript -->
+        <div class="theme-switch">
+            <button type="button" onclick="toggleTheme()" aria-label="Toggle theme">
+                🌓
+            </button>
+        </div>
+        <h1>Free Will Synthesis Survey</h1>
+        <div id="debug-panel" style="display: none;">
+            <p>Debug Mode: Active</p>
+            <button onclick="console.clear()">Clear Console</button>
+        </div>
+    </header>
+    <main>
+        <section id="instructions" aria-label="Survey Instructions">
+            <p>For each statement below, choose a number from 1 to 5 to indicate how much you agree or disagree:</p>
+            <ul>
+                <li><strong>1</strong> - Strongly Disagree</li>
+                <li><strong>2</strong> - Disagree</li>
+                <li><strong>3</strong> - Neutral</li>
+                <li><strong>4</strong> - Agree</li>
+                <li><strong>5</strong> - Strongly Agree</li>
+            </ul>
+        </section>
+        
+        <div id="error-message" class="alert" style="display: none;" role="alert">
+            Please answer all questions before submitting.
+        </div>
+
+        <form id="survey-form" novalidate>
+            <!-- Group questions by category for better organization -->
+            <fieldset>
+                <legend>Philosophical Concepts</legend>
+                <div class="question">
+                    <label for="q1">1. Free will is the ability to make different choices even if everything leading up to one's choice (e.g., the past, the situation, and their desires, beliefs, etc.) were exactly the same.</label>
+                    <select id="q1" name="q1" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q2">2. To have free will is to be able to cause things to happen in the world without at the same time being caused to make those things happen.</label>
+                    <select id="q2" name="q2" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Free Will Beliefs</legend>
+                <div class="question">
+                    <label for="q3">3. People have complete control over the decisions they make.</label>
+                    <select id="q3" name="q3" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q4">4. People must take full responsibility for any bad choices they make.</label>
+                    <select id="q4" name="q4" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q5">5. People can overcome any obstacles if they truly want to.</label>
+                    <select id="q5" name="q5" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q6">6. Criminals are totally responsible for the bad things they do.</label>
+                    <select id="q6" name="q6" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q7">7. People have complete free will.</label>
+                    <select id="q7" name="q7" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q8">8. People are always at fault for their bad behavior.</label>
+                    <select id="q8" name="q8" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q9">9. Strength of mind can always overcome the body's desires.</label>
+                    <select id="q9" name="q9" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Determinism</legend>
+                <div class="question">
+                    <label for="q10">10. People's biological makeup determines their talents and personality.</label>
+                    <select id="q10" name="q10" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q11">11. Childhood environment will determine your success as an adult.</label>
+                    <select id="q11" name="q11" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Randomness and Unpredictability</legend>
+                <div class="question">
+                    <label for="q12">12. Chance events seem to be the major cause of human history.</label>
+                    <select id="q12" name="q12" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q13">13. No one can predict what will happen in this world.</label>
+                    <select id="q13" name="q13" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q14">14. Life seems unpredictable - just like throwing dice or flipping a coin.</label>
+                    <select id="q14" name="q14" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q15">15. People are unpredictable.</label>
+                    <select id="q15" name="q15" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q16">16. Life is hard to predict because it is almost totally random.</label>
+                    <select id="q16" name="q16" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="question">
+                    <label for="q17">17. Luck plays a big role in people's lives.</label>
+                    <select id="q17" name="q17" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+            </fieldset>
+
+            <div class="form-controls">
+                <button type="submit" aria-label="Submit survey responses">Submit Survey</button>
+                <button type="reset" aria-label="Clear all responses">Clear Form</button>
+            </div>
+        </form>
+
+        <div id="results" style="display: none;" aria-live="polite">
+            <div class="results-container">
+                <div class="results-header">
+                    <h2>Your Survey Results</h2>
+                    <p class="results-timestamp"></p>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card" id="free-will-result">
+                        <h3>Free Will</h3>
+                        <div class="score"></div>
+                        <div class="interpretation"></div>
+                    </div>
+                    
+                    <div class="result-card" id="determinism-result">
+                        <h3>Determinism</h3>
+                        <div class="score"></div>
+                        <div class="interpretation"></div>
+                    </div>
+                    
+                    <div class="result-card" id="randomness-result">
+                        <h3>Randomness</h3>
+                        <div class="score"></div>
+                        <div class="interpretation"></div>
+                    </div>
+                    
+                    <div class="result-card" id="philosophical-result">
+                        <h3>Philosophical Understanding</h3>
+                        <div class="score"></div>
+                        <div class="interpretation"></div>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button id="download-results" class="action-button" type="button">
+                        Download Results
+                    </button>
+                    <button id="share-results" class="action-button" type="button">
+                        Share Results
+                    </button>
+                </div>
+
+                <div class="results-summary">
+                    <h3>Summary</h3>
+                    <p id="results-summary-text"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <h3>Free Will Synthesis Survey</h3>
+                <p>A research survey about beliefs in free will, determinism, and related philosophical concepts.</p>
+            </div>
+            
+            <div class="footer-center">
+                <div class="social-links">
+                    <a href="https://github.com/Exios66" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fab fa-github"></i>
+                        <span>GitHub</span>
+                    </a>
+                    <a href="https://github.com/Exios66/FreeWill-HTML/wiki" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-book"></i>
+                        <span>Wiki</span>
+                    </a>
+                    <a href="https://www.notion.so/" class="social-link" target="_blank" rel="noopener noreferrer">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Notion</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-right">
+                <p>Based on studies by</p>
+                <p>Paulhus, D.L., & Carey, J. (2010)</p>
+            </div>
+        </div>
+        
+        <div class="footer-divider"></div>
+        
+        <div class="footer-bottom">
+            <p>© 2024 Free Will Synthesis Project. All responses are anonymous.</p>
+            <p>Created with <i class="fas fa-heart" style="color: var(--accent-color);"></i> by Exios66</p>
+        </div>
+    </footer>
+</body>
+</html>
