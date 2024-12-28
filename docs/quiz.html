@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Assessment Quiz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #2ecc71;
+            --warning-color: #f1c40f;
+            --danger-color: #e74c3c;
+            --light-bg: #f5f5f5;
+            --dark-bg: #2c3e50;
+            --text-color: #333;
+            --light-text: #fff;
+            --border-radius: 8px;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--light-bg);
+        }
+
+        .quiz-header h1 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .progress-container {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background-color: var(--light-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--secondary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .question-card {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .category-badge {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        .difficulty {
+            display: flex;
+            gap: 4px;
+        }
+
+        .difficulty-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--light-bg);
+        }
+
+        .difficulty-dot.active {
+            background-color: var(--warning-color);
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option {
+            padding: 1rem;
+            background-color: var(--light-bg);
+            border: 2px solid transparent;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background-color: #e9ecef;
+            border-color: var(--secondary-color);
+        }
+
+        .option.selected {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .option.correct {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .option.incorrect {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            background-color: var(--light-bg);
+            cursor: not-allowed;
+        }
+
+        #results {
+            display: none;
+        }
+
+        .results-container {
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 2rem;
+            margin: 2rem 0;
+            color: var(--primary-color);
+        }
+
+        .category-breakdown {
+            display: grid;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .category-score {
+            background-color: var(--light-bg);
+            padding: 1rem;
+            border-radius: var(--border-radius);
+        }
+
+        .floating-info {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background-color: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+
+            .question-card {
+                padding: 1rem;
+            }
+
+            .floating-info {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-header">
+            <h1>Knowledge Assessment Quiz</h1>
+            <p>Test your knowledge across various subjects</p>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress"></div>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                <span>Question <span id="current-question">1</span> of <span id="total-questions">15</span></span>
+                <span>Score: <span id="score">0</span></span>
+            </div>
+        </div>
+
+        <div id="quiz">
+            <!-- Questions will be dynamically inserted here -->
+        </div>
+
+        <div id="results" class="results-container">
+            <h2>Quiz Complete!</h2>
+            <div class="score-display">
+                Your Score: <span id="final-score">0</span>/<span id="max-score">15</span>
+            </div>
+            <div class="category-breakdown" id="category-scores">
+                <!-- Category scores will be inserted here -->
+            </div>
+            <button onclick="restartQuiz()">Try Again</button>
+        </div>
+    </div>
+
+    <div class="floating-info">
+        <i class="fas fa-info-circle"></i>
+        <div>
+            <p>Click an option to answer</p>
+            <p>Use keyboard numbers 1-4 to select answers</p>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const questions = [
+            {
+                question: "What is the longest river in the world?",
+                options: ["Nile", "Amazon", "Yangtze", "Mississippi"],
+                correct: 0,
+                category: "Geography",
+                difficulty: 2
+            },
+            {
+                question: "What is the most abundant element in the universe?",
+                options: ["Hydrogen", "Helium", "Oxygen", "Carbon"],
+                correct: 0,
+                category: "Chemistry",
+                difficulty: 2
+            },
+            {
+                question: "Who painted the Mona Lisa?",
+                options: ["Leonardo da Vinci", "Vincent van Gogh", "Pablo Picasso", "Michelangelo"],
+                correct: 0,
+                category: "History",
+                difficulty: 0
+            },
+            {
+                question: "Who wrote '1984'?",
+                options: ["George Orwell", "Charles Dickens", "Voltaire", "Augustus Fitch"],
+                correct: 0,
+                category: "Literature",
+                difficulty: 1
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                options: ["Mars", "Saturn", "Jupiter", "Mercury"],
+                correct: 0,
+                category: "Astronomy",
+                difficulty: 0
+            },
+            {
+                question: "What is the capital of Australia?",
+                options: ["Canberra", "Sydney", "Perth", "Melbourne"],
+                correct: 0,
+                category: "Geography",
+                difficulty: 1
+            },
+            {
+                question: "What is the chemical symbol for gold?",
+                options: ["Au", "Ti", "Se", "Go"],
+                correct: 0,
+                category: "Chemistry",
+                difficulty: 1
+            },
+            {
+                question: "Who proposed the heliocentric model of the solar system?",
+                options: ["Nicolaus Copernicus", "Galileo Galilei", "Johannes Kepler", "Tycho Brahe"],
+                correct: 0,
+                category: "Astronomy",
+                difficulty: 2
+            },
+            {
+                question: "What is the present largest mammal?",
+                options: ["Blue Whale", "Giant-Squid", "Whale Shark", "Hippopotamus"],
+                correct: 0,
+                category: "General",
+                difficulty: 0
+            },
+            {
+                question: "What is the chemical formula for sulfuric acid?",
+                options: ["H2SO4", "HCI", "NaOH", "CH3COOH"],
+                correct: 0,
+                category: "Chemistry",
+                difficulty: 2
+            },
+            {
+                question: "What is the Smallest Prime Number?",
+                options: ["2", "3", "1.5", "5"],
+                correct: 0,
+                category: "Math",
+                difficulty: 2
+            },
+            {
+                question: "Who founded psychoanalysis?",
+                options: ["Sigmund Freud", "Carl Jung", "B.F. Skinner", "William James"],
+                correct: 0,
+                category: "Psychology",
+                difficulty: 1
+            },
+            {
+                question: "What is classical conditioning?",
+                options: ["Learning through association", "Complex Thinking", "Direct Learning", "Problem Solving"],
+                correct: 0,
+                category: "Psychology",
+                difficulty: 1
+            },
+            {
+                question: "What is metacognition?",
+                options: ["Thinking about thinking", "Basic Thought", "Memory Recall", "Problem Solving"],
+                correct: 0,
+                category: "Psych",
+                difficulty: 2
+            },
+            {
+                question: "What is alexithymia?",
+                options: ["Cannot properly identify emotions", "Memory Disorder", "Learning Disability", "Attention Deficit"],
+                correct: 0,
+                category: "Psych",
+                difficulty: 2
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answeredQuestions = new Set();
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            const quizContainer = document.getElementById('quiz');
+            
+            const questionHTML = `
+                <div class="question-card">
+                    <div class="question-header">
+                        <span class="category-badge">${question.category}</span>
+                        <div class="difficulty">
+                            ${Array(3).fill(0).map((_, i) => 
+                                `<span class="difficulty-dot ${i <= question.difficulty ? 'active' : ''}"></span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <div class="question-text">${question.question}</div>
+                    <div class="options-grid">
+                        ${question.options.map((option, index) => `
+                            <div class="option" data-index="${index}" onclick="selectOption(${index})">
+                                ${option}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="controls">
+                        <button onclick="previousQuestion()" ${currentQuestionIndex === 0 ? 'disabled' : ''}>Previous</button>
+                        <button onclick="nextQuestion()" ${!answeredQuestions.has(currentQuestionIndex) ? 'disabled' : ''}>
+                            ${currentQuestionIndex === questions.length - 1 ? 'Finish' : 'Next'}
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            quizContainer.innerHTML = questionHTML;
+            updateProgress();
+        }
+
+        function selectOption(optionIndex) {
+            if (answeredQuestions.has(currentQuestionIndex)) return;
+
+            const options = document.querySelectorAll('.option');
+            const currentQuestion = questions[currentQuestionIndex];
+            
+            options.forEach(option => option.classList.remove('selected'));
+            options[optionIndex].classList.add('selected');
+            
+            setTimeout(() => {
+                options[currentQuestion.correct].classList.add('correct');
+                if (optionIndex !== currentQuestion.correct) {
+                    options[optionIndex].classList.add('incorrect');
+                } else {
+                    score++;
+                    document.getElementById('score').textContent = score;
+                }
+                
+                answeredQuestions.add(currentQuestionIndex);
+                document.querySelector('.controls button:last-child').disabled = false;
+            }, 500);
+        }
+
+        function updateProgress() {
+            const progress = ((currentQuestionIndex) / questions.length) * 100;
+            document.getElementById('progress').style.width = `${progress}%`;
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+            document.getElementById('total-questions').textContent = questions.length;
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('final-score').textContent = score;
+            document.getElementById('max-score').textContent = questions.length;
+
+            // Calculate category scores
+            const categoryScores = {};
+            questions.forEach((q, index) => {
+                if (!categoryScores[q.category]) {
+                    categoryScores[q.category] = { correct: 0, total: 0 };
+                }
+                categoryScores[q.category].total++;
+                if (answeredQuestions.has(index) && questions[index].correct === Array.from(document.querySelectorAll('.option')).findIndex(opt => opt.classList.contains('selected'))) {
+                    categoryScores[q.category].correct++;
+                }
+            });
+
+            const categoryBreakdown = document.getElementById('category-scores');
+            categoryBreakdown.innerHTML = Object.entries(categoryScores)
+                .map(([category, scores]) => `
+                    <div class="category-score">
+                        <h3>${category}</h3>
+                        <p>${scores.correct}/${scores.total} correct</p>
+                    </div>
+                `).join('');
+        }
+
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answeredQuestions = new Set();
+            document.getElementById('score').textContent = '0';
+            document.getElementById('quiz').style.display = 'block';
+            document.getElementById('results').style.display = 'none';
+            displayQuestion();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key >= '1' && e.key <= '4') {
+                const optionIndex = parseInt(e.key) - 1;
+                if (optionIndex < questions[currentQuestionIndex].options.length) {
+                    selectOption(optionIndex);
+                }
+            }
+        });
+
+        // Initialize quiz
+        displayQuestion();
+    </script>
+</body>
+</html> 
